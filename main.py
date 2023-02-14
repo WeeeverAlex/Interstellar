@@ -9,7 +9,7 @@ pygame.font.init()
 x= 1280
 y= 600
 screen = pygame.display.set_mode((x, y))
-pygame.display.set_caption("Loving Flies")
+pygame.display.set_caption("interstellar")
 
 #FPS
 clock = pygame.time.Clock()
@@ -50,8 +50,8 @@ def main_menu():
     while menu:
         screen.blit(bg, (0, 0))
         MENU_MOUSE_POS = pygame.mouse.get_pos()
-        MENU_TEXT = get_font(100).render("MAIN MENU", True, "White")
-        MENU_RECT = MENU_TEXT.get_rect(center=(640, 80))
+        MENU_TEXT = get_font(100).render("INTERSTELLAR", True, "White")
+        MENU_RECT = MENU_TEXT.get_rect(center=(650, 80))
         PLAY_BUTTON = Button(image=None, pos=(640, 250),text_input="PLAY", font=get_font(75), base_color="White", hovering_color="Green")
         OPTIONS_BUTTON = Button(image=None, pos=(640, 350),text_input="OPTIONS", font=get_font(75), base_color="White", hovering_color="Green")
         QUIT_BUTTON = Button(image=None, pos=(640, 450),text_input="QUIT", font=get_font(75), base_color="White", hovering_color="Red")
