@@ -121,11 +121,9 @@ def gameover():
         screen.blit(bg, (0, 0))
 
         #write on screen
-        score_board = write(f'Score: {points}', 50, (255, 255, 255))
         game_over = write('GAME OVER', 100, (225, 225, 225)) 
         end = write('PRESS RETURN TO END GAME', 40, (225, 225, 225))
         screen.blit(game_over, (400, 200))
-        screen.blit(score_board, (560, 300))
         screen.blit(end, (400, 450))
         pygame.display.update()
 
