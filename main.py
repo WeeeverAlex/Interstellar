@@ -138,7 +138,45 @@ def gameover():
 #----------------------------GAME LOGIC----------------------------#
 main_menu()
 
-#while game:
+while game:
+
+
+    image_rocket = pygame.image.load("graphics/foguete.png").convert_alpha()
+    image_rocket = pygame.transform.scale(image_rocket, (100, 100))
+    image_rocket_rect = image_rocket.get_rect(center=(x/2, y/2))    
+    image_rocket_rect.x = 100
+    image_rocket_rect.y = 450
+
+
+    image_planet = pygame.image.load("graphics/4.png").convert_alpha()
+    image_planet = pygame.transform.scale(image_planet, (450, 300))
+    image_planet_rect = image_planet.get_rect(center=(x/2, y/2))
+    image_planet_rect.x = 800
+    image_planet_rect.y = 150
+
+    image_alien = pygame.image.load("graphics/alien.png").convert_alpha()
+    image_alien = pygame.transform.scale(image_alien, (200, 100))
+    image_alien_rect = image_alien.get_rect(center=(x/2, y/2))
+    image_alien_rect.x = 800
+    image_alien_rect.y = 100
+    
+
+    clock.tick(FPS)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            game = False
+
+
+    screen.blit(bg, (0, 0))
+    #plot rocket
+    screen.blit(image_rocket, image_rocket_rect)
+    #plot planet
+    screen.blit(image_planet, image_planet_rect)
+    #plot alien
+    screen.blit(image_alien, image_alien_rect)
+
+    pygame.display.update()
 
 
 
