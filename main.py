@@ -2,7 +2,8 @@ import pygame
 from button import Button
 from button import *
 import random
-
+import math
+import numpy as np
 
 pygame.init()
 pygame.font.init()
@@ -32,15 +33,15 @@ font = pygame.font.SysFont("font/Pixeltype.ttf", 50)
 # Set up the game loop
 game = True
 score = 0
-bird_launched = False
-bird_velocity = [0, 0]
-num_birds = 3
+rocket_launched = False
+rocket_velocity = [0, 0]
+num_rockets = 3
 
-# Load the bird image
-bird_image = pygame.image.load("graphics/foguete.png")
-bird_image = pygame.transform.scale(bird_image, (50, 50))
-bird_rect = bird_image.get_rect()
-bird_rect.center = (100, screen_height - 200)
+# Load the rocket image
+rocket_image = pygame.image.load("graphics/foguete.png")
+rocket_image = pygame.transform.scale(rocket_image, (50, 50))
+rocket_rect = rocket_image.get_rect()
+rocket_rect.center = (100, screen_height - 200)
 
 #----------------------functions----------------------#
 
@@ -177,120 +178,132 @@ def score_screen():
 
 # Set up the planets sprite
 class Planets(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, pos):
         super().__init__()
         self.image = pygame.image.load("graphics/3.png")
         self.image = pygame.transform.scale(self.image, (100, 100))
         self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
+        self.rect.center = np.array([pos[0], pos[1]])
 
 planets = pygame.sprite.Group()
 #add the planets randomly
-for i in range(3):
-    x = random.randint(500, 1000)
-    y = random.randint(100, 600)
-    planets.add(Planets(x, y))
+pos_planet = np.array([random.randint(200, 400), random.randint(100, 200)])
 
-# Set up the pig sprite
-class Pig(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+planets.add(Planets(pos_planet))
+planets.add(Planets(np.array([pos_planet[0] + 250, pos_planet[1] + 200])))
+planets.add(Planets(np.array([pos_planet[0] + 500, pos_planet[1] + 300])))
+
+# Set up the Alien sprite
+class Alien(pygame.sprite.Sprite):
+    def __init__(self, pos):
         super().__init__()
         self.image = pygame.image.load("graphics/alien.png")
         self.image = pygame.transform.scale(self.image, (50, 50))
         self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
+        self.rect.center = np.array([pos[0], pos[1]])
 
-pigs = pygame.sprite.Group()
-#add the pigs randomly
-for i in range(3):
-    x = random.randint(500, 1000)
-    y = random.randint(100, 600)
-    pigs.add(Pig(x, y))
+    def move(self, vel):
+        self.rect.center = self.rect.center + 0.001 * vel
+        
+
+aliens = pygame.sprite.Group()
+#add the aliens near the planets
+
+for planet in planets:
+    pos_alien = np.array([planet.rect.x + 70, planet.rect.y + 120])
+    aliens.add(Alien(pos_alien))
     
+#function to calculate the gravity between the planets and the aliens
+def gravidade(constante,planeta,alien):
+    direcao_a = np.array([planeta.rect.center[0],planeta.rect.center[1]]) - np.array([alien.rect.center[0],alien.rect.center[1]])
+    distancia = np.linalg.norm(direcao_a)
+    direcao_a = direcao_a/distancia
+    mag_a = constante / distancia**2
+    a_alien = mag_a * direcao_a
+    return a_alien    
 
 
 #----------------------------GAME LOGIC----------------------------#
 main_menu()
 
 while game:
+    
+    vel_alien = np.array([100, -100])
+    a_alien = np.array([0, 0.15])
+    
+    for planet,alien in zip(planets,aliens):
+        a_alien = gravidade(50000,planet,alien)
+        vel_alien = vel_alien +  a_alien
+        alien.move(vel_alien)
+
 
     # Handle events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game = False
 
-        #make the player choose the angle and power of the bird, make it like a slingshot
-        if event.type == pygame.MOUSEBUTTONDOWN and not bird_launched:
+        #make the player choose the angle and power of the rocket, make it like a slingshot
+        if event.type == pygame.MOUSEBUTTONDOWN and not rocket_launched:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            angle = (mouse_y - bird_rect.centery) / 10
-            power = (mouse_x - bird_rect.centerx) / 10
-            bird_velocity = [power, angle]
-            bird_launched = True
+            angle = (mouse_y - rocket_rect.centery) / 10
+            power = (mouse_x - rocket_rect.centerx) / 10
+            rocket_velocity = [power, angle]
+            rocket_launched = True
 
 
 
-    # Update the bird position and velocity if it has been launched
-    if bird_launched:
-        bird_velocity[1] += 1
-        bird_rect.move_ip(bird_velocity)
+    # Update the rocket position and velocity if it has been launched
+    if rocket_launched:
+        rocket_velocity[1] += 1
+        rocket_rect.move_ip(rocket_velocity)
     
-    # Detect collisions between the bird and the pigs
-    if bird_launched:
-        for pig in pigs:
-            if bird_rect.colliderect(pig.rect):
-                pig.kill()
+    # Detect collisions between the rocket and the aliens
+    if rocket_launched:
+        for alien in aliens:
+            if rocket_rect.colliderect(alien.rect):
+                alien.kill()
                 score += 10
 
     
 
-    #respawn the bird if it goes off the screen
-    if bird_rect.top > screen_height:
-        num_birds -= 1
-        if num_birds == 0:
+    #respawn the rocket if it goes off the screen
+    if rocket_rect.top > screen_height:
+        num_rockets -= 1
+        if num_rockets == 0:
             game = False
             gameover()
 
         else:
-            bird_launched = False
-            bird_rect.center = (100, screen_height - 200)
-            bird_velocity = [0, 0]
+            rocket_launched = False
+            rocket_rect.center = (100, screen_height - 200)
+            rocket_velocity = [0, 0]
 
-    #if all the pigs are gone, the player wins and the score screen appears
-    if len(pigs) == 0:
+    #if all the aliens are gone, the player wins and the score screen appears
+    if len(aliens) == 0:
         game = False
         score_screen()
 
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                game = False
-
-    #add the pigs arround the planets and make it move on circles
-    for pig in pigs:
-        pig.rect.x -= 1
-        pig.rect.y += 1
-        if pig.rect.x < 0:
-            pig.rect.x = 1000
-        if pig.rect.y > 600:
-            pig.rect.y = 0
+                game = False    
+    
 
 
-        
-            
-    # Draw the background, bird, pigs, and obstacles on the screen
+    # Draw the background, rocket, aliens, and obstacles on the screen
     # Draw the background full image
     screen.blit(background, (0, 0))
-    screen.blit(bird_image, bird_rect)
-    pigs.draw(screen)
+    screen.blit(rocket_image, rocket_rect)
+    aliens.draw(screen)
     planets.draw(screen)
 
     # Draw the score on the screen
     score_text = font.render("Score: " + str(score), True, (255, 255, 255))
     screen.blit(score_text, (10, 10))
 
-    # Draw the remaining birds on the screen
-    bird_text = font.render("Rockets: " + str(num_birds), True, (255, 255, 255))
-    screen.blit(bird_text, (10, 50))
+    # Draw the remaining rockets on the screen
+    rocket_text = font.render("Rockets: " + str(num_rockets), True, (255, 255, 255))
+    screen.blit(rocket_text, (10, 50))
 
     # Update the display
     pygame.display.update()
