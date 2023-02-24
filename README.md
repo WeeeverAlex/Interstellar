@@ -11,3 +11,11 @@ A: In the Menu of the game there is the options button, if you click it there wi
 
 
 Mathematical description of the physical model: ------
+
+
+
+
+
+https://user-images.githubusercontent.com/89090868/221230214-72ee3e1f-92ce-4534-9155-ed472eb758eb.mp4
+
+
