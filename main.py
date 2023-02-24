@@ -2,7 +2,6 @@ import pygame
 from button import Button
 from button import *
 import random
-import math
 import numpy as np
 
 pygame.init()
@@ -185,80 +184,50 @@ def score_screen():
 
 # Set up the planets sprite
 class Planets(pygame.sprite.Sprite):
-    def __init__(self, x,y):
+    def __init__(self, pos):
         super().__init__()
         self.image = pygame.image.load("graphics/3.png")
         self.image = pygame.transform.scale(self.image, (100, 100))
         self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
+        self.rect.center = np.array([pos[0], pos[1]])
+
 
 planets = pygame.sprite.Group()
-#add the planets randomly
-planet_x_1 = random.randint(200 , 400)
-planet_y_1 = random.randint(100 , 150)
-planets.add(Planets(planet_x_1, planet_y_1))
-planet_x_2 = random.randint(600 , 800)
-planet_y_2 = random.randint(250 , 350)
-planets.add(Planets(planet_x_2, planet_y_2))
-planet_x_3 = random.randint(900 , 1100)
-planet_y_3 = random.randint(400 , 500 )
-planets.add(Planets(planet_x_3, planet_y_3))
+#add the planets ramdomly
+planets.add(Planets((random.randint(400, 600), random.randint(100, 360))))
+planets.add(Planets((random.randint(600, 800), random.randint(360, 700))))
+
+    
+#
 
 
 
 
 # Set up the Alien sprite
 class Alien(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, pos):
         super().__init__()
         self.image = pygame.image.load("graphics/alien.png")
         self.image = pygame.transform.scale(self.image, (50, 50))
         self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
+        self.rect.center = np.array([pos[0], pos[1]])
 
-    def move(self, x, y):
-        self.rect.x = x
-        self.rect.y = y
+    def move(self, vel):
+        self.rect.center = self.rect.center + 0.001 * vel
         
 
 aliens = pygame.sprite.Group()
-#add the aliens near the planets
-
-for planet in planets:
-    alien_x = planet.rect.center[0] + random.randint(50, 70)
-    alien_y = planet.rect.center[1] + random.randint(80, 100)
-    aliens.add(Alien(alien_x, alien_y))
+#add the aliens ramdomly
+aliens.add(Alien((random.randint(750, 1200), random.randint(100, 300))))
+aliens.add(Alien((random.randint(750, 1200), random.randint(300, 500))))
+aliens.add(Alien((random.randint(750, 1200), random.randint(500, 700))))
     
-#function to calculate the gravity between the planets and the aliens
-# def gravidade(constante,planeta,alien):
-#     direcao_a = np.array([planeta.rect.center[0],planeta.rect.center[1]]) - np.array([alien.rect.center[0],alien.rect.center[1]])
-#     distancia = np.linalg.norm(direcao_a)
-#     direcao_a = direcao_a/distancia
-#     mag_a = constante / distancia**2
-#     a_alien = mag_a * direcao_a
-#     return a_alien    
 
-# circular movement of the aliens around the planets
-radius = 50
-angle = 0
+
 #----------------------------GAME LOGIC----------------------------#
 main_menu()
 
 while game:
-    
-    
-    # for planet,alien in zip(planets,aliens):
-    #     a_alien = gravidade(50000,planet,alien)
-    #     vel_alien = vel_alien +  a_alien
-    #     alien.move(vel_alien)
-
-    for alien,planet in zip(aliens,planets):
-        x = int(radius * math.cos(math.radians(angle))) + planet.rect.center[0] - 20
-        y = int(radius * math.sin(math.radians(angle))) + planet.rect.center[1] - 20
-        
-        alien.move(x, y)
-
-    angle += 1
 
 
     # Handle events
@@ -286,8 +255,8 @@ while game:
         for alien in aliens:
             if rocket_rect.colliderect(alien.rect):
                 alien.kill()
-                score += 10
-
+                score += 1
+                num_rockets += 1
     
 
     #respawn the rocket if it goes off the screen
@@ -318,12 +287,11 @@ while game:
     # Draw the background full image
     screen.blit(background, (0, 0))
     screen.blit(rocket_image, rocket_rect)
-
     aliens.draw(screen)
     planets.draw(screen)
 
     # Draw the score on the screen
-    score_text = font.render("Score: " + str(score), True, (255, 255, 255))
+    score_text = font.render("Aliens killed: " + str(score), True, (255, 255, 255))
     screen.blit(score_text, (10, 10))
 
     # Draw the remaining rockets on the screen
@@ -338,6 +306,5 @@ while game:
 
 # Quit Pygame
 pygame.quit()
-
 
 
