@@ -19,10 +19,7 @@ We added a gravitational attractor, at a point on the screen. By doing this, the
 
 
 # PREVIEW:
+![WhatsApp-Video-2023-02-24-at-13 10 58](https://user-images.githubusercontent.com/89090868/221237635-8d97aa48-8da2-4ce8-abc5-510f72bc312f.gif)
 
-https://user-images.githubusercontent.com/89090868/221230214-72ee3e1f-92ce-4534-9155-ed472eb758eb.mp4
-
-
-# Creators
-
+# Creators!
 Alexandre Wever & Sergio Ramella
