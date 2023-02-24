@@ -15,7 +15,7 @@ A: In the Menu of the game there is the options button, if you click it there wi
 
 # Mathematical description of the physical model:
 
-We added a new gravitational attractor, at a point on the screen. By doing this, we now have a celestial body exerting gravitational attraction on our rocket. When this happens, the resulting acceleration on each rocket is the (vector) sum of each of the attractions due to the individual celestial bodies.
+We added a gravitational attractor, at a point on the screen. By doing this, the celestial body is exerting gravitational attraction on our rocket. When this happens, the resulting acceleration on each rocket is the (vector) sum of each of the attractions due to the individual celestial bodies.
 
 
 # PREVIEW:
