@@ -178,63 +178,80 @@ def score_screen():
 
 # Set up the planets sprite
 class Planets(pygame.sprite.Sprite):
-    def __init__(self, pos):
+    def __init__(self, x,y):
         super().__init__()
         self.image = pygame.image.load("graphics/3.png")
         self.image = pygame.transform.scale(self.image, (100, 100))
         self.rect = self.image.get_rect()
-        self.rect.center = np.array([pos[0], pos[1]])
+        self.rect.center = (x, y)
 
 planets = pygame.sprite.Group()
 #add the planets randomly
-pos_planet = np.array([random.randint(200, 400), random.randint(100, 200)])
+planet_x_1 = random.randint(200 , 400)
+planet_y_1 = random.randint(100 , 150)
+planets.add(Planets(planet_x_1, planet_y_1))
+planet_x_2 = random.randint(600 , 800)
+planet_y_2 = random.randint(250 , 350)
+planets.add(Planets(planet_x_2, planet_y_2))
+planet_x_3 = random.randint(900 , 1100)
+planet_y_3 = random.randint(400 , 500 )
+planets.add(Planets(planet_x_3, planet_y_3))
 
-planets.add(Planets(pos_planet))
-planets.add(Planets(np.array([pos_planet[0] + 250, pos_planet[1] + 200])))
-planets.add(Planets(np.array([pos_planet[0] + 500, pos_planet[1] + 300])))
+
+
 
 # Set up the Alien sprite
 class Alien(pygame.sprite.Sprite):
-    def __init__(self, pos):
+    def __init__(self, x, y):
         super().__init__()
         self.image = pygame.image.load("graphics/alien.png")
         self.image = pygame.transform.scale(self.image, (50, 50))
         self.rect = self.image.get_rect()
-        self.rect.center = np.array([pos[0], pos[1]])
+        self.rect.center = (x, y)
 
-    def move(self, vel):
-        self.rect.center = self.rect.center + 0.001 * vel
+    def move(self, x, y):
+        self.rect.x = x
+        self.rect.y = y
         
 
 aliens = pygame.sprite.Group()
 #add the aliens near the planets
 
 for planet in planets:
-    pos_alien = np.array([planet.rect.x + 70, planet.rect.y + 120])
-    aliens.add(Alien(pos_alien))
+    alien_x = planet.rect.center[0] + random.randint(50, 70)
+    alien_y = planet.rect.center[1] + random.randint(80, 100)
+    aliens.add(Alien(alien_x, alien_y))
     
 #function to calculate the gravity between the planets and the aliens
-def gravidade(constante,planeta,alien):
-    direcao_a = np.array([planeta.rect.center[0],planeta.rect.center[1]]) - np.array([alien.rect.center[0],alien.rect.center[1]])
-    distancia = np.linalg.norm(direcao_a)
-    direcao_a = direcao_a/distancia
-    mag_a = constante / distancia**2
-    a_alien = mag_a * direcao_a
-    return a_alien    
+# def gravidade(constante,planeta,alien):
+#     direcao_a = np.array([planeta.rect.center[0],planeta.rect.center[1]]) - np.array([alien.rect.center[0],alien.rect.center[1]])
+#     distancia = np.linalg.norm(direcao_a)
+#     direcao_a = direcao_a/distancia
+#     mag_a = constante / distancia**2
+#     a_alien = mag_a * direcao_a
+#     return a_alien    
 
-
+# circular movement of the aliens around the planets
+radius = 50
+angle = 0
 #----------------------------GAME LOGIC----------------------------#
 main_menu()
 
 while game:
     
-    vel_alien = np.array([100, -100])
-    a_alien = np.array([0, 0.15])
     
-    for planet,alien in zip(planets,aliens):
-        a_alien = gravidade(50000,planet,alien)
-        vel_alien = vel_alien +  a_alien
-        alien.move(vel_alien)
+    # for planet,alien in zip(planets,aliens):
+    #     a_alien = gravidade(50000,planet,alien)
+    #     vel_alien = vel_alien +  a_alien
+    #     alien.move(vel_alien)
+
+    for alien,planet in zip(aliens,planets):
+        x = int(radius * math.cos(math.radians(angle))) + planet.rect.center[0] - 20
+        y = int(radius * math.sin(math.radians(angle))) + planet.rect.center[1] - 20
+        
+        alien.move(x, y)
+
+    angle += 1
 
 
     # Handle events
@@ -294,6 +311,7 @@ while game:
     # Draw the background full image
     screen.blit(background, (0, 0))
     screen.blit(rocket_image, rocket_rect)
+
     aliens.draw(screen)
     planets.draw(screen)
 
