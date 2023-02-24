@@ -11,3 +11,7 @@ A: In the Menu of the game there is the options button, if you click it there wi
 
 
 Mathematical description of the physical model: ------
+
+
+
+![]https://github.com/WeeeverAlex/Interstellar/blob/main/gif.mp4
