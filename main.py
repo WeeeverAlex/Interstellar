@@ -82,14 +82,64 @@ def main_menu():
                 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    play()
+                    if "hard" == play():
+                        planets.add(Planets((random.randint(600, 800), random.randint(360, 700))))
                     menu = False
-
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     options()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.quit()
         pygame.display.update()
 
+
+def play():
+    play = True
+    while play:
+        screen.blit(background, (0, 0))
+        PLAYPAGE_TEXT = get_font(100).render("DIFICULTY", True, "White")
+        PLAYPAGE_RECT = PLAYPAGE_TEXT.get_rect(center=(640, 80))
+        screen.blit(PLAYPAGE_TEXT, PLAYPAGE_RECT)
+        PLAY_MOUSE_POS = pygame.mouse.get_pos()
+
+        Wever = get_font(20).render("Game made by Alexandre Wever and Sergio Ramella", True, "White")
+        Wever_rect = Wever.get_rect(center=(1110, 570))
+        screen.blit(Wever, Wever_rect)
+        
+        EASY = Button(image=None, pos=(640, 200),text_input="EASY", font=get_font(75), base_color="White", hovering_color="Red")
+        EASY.changeColor(PLAY_MOUSE_POS)
+        EASY.update(screen)
+        
+        HARD = Button(image=None, pos=(640, 300),text_input="HARD", font=get_font(75), base_color="White", hovering_color="Red")
+        HARD.changeColor(PLAY_MOUSE_POS)
+        HARD.update(screen)
+
+
+        PLAY_BACK = Button(image=None, pos=(640, 460),text_input="BACK", font=get_font(75), base_color="White", hovering_color="Red")
+        PLAY_BACK.changeColor(PLAY_MOUSE_POS)
+        PLAY_BACK.update(screen)
+
+        
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if EASY.checkForInput(PLAY_MOUSE_POS):
+                    play = False
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if HARD.checkForInput(PLAY_MOUSE_POS):
+                    play = False
+                    return "hard" 
+
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
+                    play = False
+        pygame.display.update()
+    
 #used an old code(from my last pygame) and adapt it for the option part
 def options():
     option = True
@@ -195,7 +245,6 @@ class Planets(pygame.sprite.Sprite):
 planets = pygame.sprite.Group()
 #add the planets ramdomly
 planets.add(Planets((random.randint(400, 600), random.randint(100, 360))))
-planets.add(Planets((random.randint(600, 800), random.randint(360, 700))))
 
     
 #
