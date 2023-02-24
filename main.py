@@ -84,7 +84,7 @@ def main_menu():
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     play()
                     if "hard" == play():
-                        planets.add(Planets((random.randint(600, 800), random.randint(360, 700))))
+                        planets.add(Planets((random.randint(200, 1200), random.randint(200, 400))))
                     menu = False
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     options()
@@ -244,12 +244,7 @@ class Planets(pygame.sprite.Sprite):
 
 planets = pygame.sprite.Group()
 #add the planets ramdomly
-planets.add(Planets((random.randint(400, 600), random.randint(100, 360))))
-
-    
-#
-
-
+planets.add(Planets((random.randint(150, 1200), random.randint(100, 550))))
 
 
 # Set up the Alien sprite
@@ -267,9 +262,9 @@ class Alien(pygame.sprite.Sprite):
 
 aliens = pygame.sprite.Group()
 #add the aliens ramdomly
-aliens.add(Alien((random.randint(750, 1200), random.randint(100, 300))))
-aliens.add(Alien((random.randint(750, 1200), random.randint(300, 500))))
-aliens.add(Alien((random.randint(750, 1200), random.randint(500, 700))))
+aliens.add(Alien((random.randint(200, 500), random.randint(100, 250))))
+aliens.add(Alien((random.randint(600, 800), random.randint(300, 400))))
+aliens.add(Alien((random.randint(900, 1200), random.randint(500, 550))))
     
 
 
@@ -287,8 +282,8 @@ while game:
         #make the player choose the angle and power of the rocket, make it like a slingshot
         if event.type == pygame.MOUSEBUTTONDOWN and not rocket_launched:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            angle = (mouse_y - rocket_rect.centery) / 12.5
-            power = (mouse_x - rocket_rect.centerx) / 12.5
+            angle = (mouse_y - rocket_rect.centery) / 25
+            power = (mouse_x - rocket_rect.centerx) / 50
             rocket_velocity = [power, angle]
             rocket_launched = True
 
@@ -322,8 +317,9 @@ while game:
     
 
     #respawn the rocket if it goes off the screen
-    if rocket_rect.top > screen_height:
+    if rocket_rect.top > screen_height or rocket_rect.top < 0:
         num_rockets -= 1
+
         if num_rockets == 0:
             game = False
             gameover()
@@ -344,10 +340,6 @@ while game:
                 game = False    
     
     
-        
-
-
-
     # Draw the background, rocket, aliens, and obstacles on the screen
     # Draw the background full image
     screen.blit(background, (0, 0))
