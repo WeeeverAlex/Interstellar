@@ -287,8 +287,8 @@ while game:
         #make the player choose the angle and power of the rocket, make it like a slingshot
         if event.type == pygame.MOUSEBUTTONDOWN and not rocket_launched:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            angle = (mouse_y - rocket_rect.centery) / 10
-            power = (mouse_x - rocket_rect.centerx) / 10
+            angle = (mouse_y - rocket_rect.centery) / 12.5
+            power = (mouse_x - rocket_rect.centerx) / 12.5
             rocket_velocity = [power, angle]
             rocket_launched = True
 
@@ -296,8 +296,21 @@ while game:
 
     # Update the rocket position and velocity if it has been launched
     if rocket_launched:
-        rocket_velocity[1] += 1
+
+        rocket_velocity[1] += 0.1
         rocket_rect.move_ip(rocket_velocity)
+        for planet in planets:
+            C = 20000 # constante gravitacional * massa planeta
+            direcao_a = planet.rect.center - np.array([rocket_rect.center ])
+            d = np.linalg.norm(direcao_a)
+            direcao_a = direcao_a / d
+
+            mag_a = C / d**2
+            a = direcao_a * mag_a
+            a = np.array([a[0][0], a[0][1]])
+            rocket_velocity = rocket_velocity + a
+
+            rocket_rect.move_ip(rocket_velocity)
     
     # Detect collisions between the rocket and the aliens
     if rocket_launched:
@@ -330,11 +343,16 @@ while game:
             if event.type == pygame.QUIT:
                 game = False    
     
+    
+        
+
 
 
     # Draw the background, rocket, aliens, and obstacles on the screen
     # Draw the background full image
     screen.blit(background, (0, 0))
+    
+    
     screen.blit(rocket_image, rocket_rect)
     aliens.draw(screen)
     planets.draw(screen)
