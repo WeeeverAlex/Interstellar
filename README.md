@@ -10,6 +10,4 @@ Q: How do I play the game?
 A: In the Menu of the game there is the options button, if you click it there will be instructions on how to play the game!
 
 
-
-
 Mathematical description of the physical model: ------
