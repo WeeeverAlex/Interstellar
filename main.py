@@ -84,7 +84,7 @@ def main_menu():
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     play()
                     if "hard" == play():
-                        planets.add(Planets((random.randint(200, 1200), random.randint(200, 400))))
+                        planets.add(Planets((600, 400)))
                     menu = False
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     options()
@@ -244,15 +244,15 @@ class Planets(pygame.sprite.Sprite):
 
 planets = pygame.sprite.Group()
 #add the planets ramdomly
-planets.add(Planets((random.randint(150, 1200), random.randint(100, 550))))
+planets.add(Planets((600, 200)))
 
 
 # Set up the Alien sprite
 class Alien(pygame.sprite.Sprite):
-    def __init__(self, pos):
+    def __init__(self, pos,tamanho):
         super().__init__()
         self.image = pygame.image.load("graphics/alien.png")
-        self.image = pygame.transform.scale(self.image, (50, 50))
+        self.image = pygame.transform.scale(self.image, tamanho)
         self.rect = self.image.get_rect()
         self.rect.center = np.array([pos[0], pos[1]])
 
@@ -262,9 +262,9 @@ class Alien(pygame.sprite.Sprite):
 
 aliens = pygame.sprite.Group()
 #add the aliens ramdomly
-aliens.add(Alien((random.randint(200, 500), random.randint(100, 250))))
-aliens.add(Alien((random.randint(600, 800), random.randint(300, 400))))
-aliens.add(Alien((random.randint(900, 1200), random.randint(500, 550))))
+aliens.add(Alien((1000, 150),(100,70)))
+aliens.add(Alien(((1000, 350)),(100,70)))
+aliens.add(Alien((1000, 500),(100,70)))
     
 
 
@@ -282,7 +282,7 @@ while game:
         #make the player choose the angle and power of the rocket, make it like a slingshot
         if event.type == pygame.MOUSEBUTTONDOWN and not rocket_launched:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            angle = (mouse_y - rocket_rect.centery) / 25
+            angle = (mouse_y - rocket_rect.centery) / 50
             power = (mouse_x - rocket_rect.centerx) / 50
             rocket_velocity = [power, angle]
             rocket_launched = True
@@ -295,7 +295,7 @@ while game:
         rocket_velocity[1] += 0.1
         rocket_rect.move_ip(rocket_velocity)
         for planet in planets:
-            C = 20000 # constante gravitacional * massa planeta
+            C = 7500 # constante gravitacional * massa planeta
             direcao_a = planet.rect.center - np.array([rocket_rect.center ])
             d = np.linalg.norm(direcao_a)
             direcao_a = direcao_a / d
