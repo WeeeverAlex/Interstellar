@@ -4,6 +4,7 @@ from button import *
 import random
 import numpy as np
 
+#initialization
 pygame.init()
 pygame.font.init()
 
@@ -84,7 +85,8 @@ def main_menu():
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     play()
                     if "hard" == play():
-                        planets.add(Planets((600, 400)))
+                        planets_hard.add(Planets2((600, 200)))
+                        planets_hard.add(Planets2((600, 400)))
                     menu = False
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     options()
@@ -243,8 +245,18 @@ class Planets(pygame.sprite.Sprite):
 
 
 planets = pygame.sprite.Group()
-#add the planets ramdomly
-planets.add(Planets((600, 200)))
+#add the planet
+planets.add(Planets((600, 300)))
+
+class Planets2(pygame.sprite.Sprite):
+    def __init__(self, pos):
+        super().__init__()
+        self.image = pygame.image.load("graphics/5.png")
+        self.image = pygame.transform.scale(self.image, (50, 50))
+        self.rect = self.image.get_rect()
+        self.rect.center = np.array([pos[0], pos[1]])
+
+planets_hard = pygame.sprite.Group()
 
 
 # Set up the Alien sprite
@@ -261,7 +273,7 @@ class Alien(pygame.sprite.Sprite):
         
 
 aliens = pygame.sprite.Group()
-#add the aliens ramdomly
+#add the aliens behind the planets
 aliens.add(Alien((1000, 150),(100,70)))
 aliens.add(Alien(((1000, 350)),(100,70)))
 aliens.add(Alien((1000, 500),(100,70)))
@@ -294,8 +306,9 @@ while game:
 
         rocket_velocity[1] += 0.1
         rocket_rect.move_ip(rocket_velocity)
+        #calculate the gravity of the planets
         for planet in planets:
-            C = 7500 # constante gravitacional * massa planeta
+            C = 15000 
             direcao_a = planet.rect.center - np.array([rocket_rect.center ])
             d = np.linalg.norm(direcao_a)
             direcao_a = direcao_a / d
@@ -348,6 +361,7 @@ while game:
     screen.blit(rocket_image, rocket_rect)
     aliens.draw(screen)
     planets.draw(screen)
+    planets_hard.draw(screen)
 
     # Draw the score on the screen
     score_text = font.render("Aliens killed: " + str(score), True, (255, 255, 255))
