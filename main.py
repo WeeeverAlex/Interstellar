@@ -85,8 +85,8 @@ def main_menu():
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     play()
                     if "hard" == play():
-                        planets_hard.add(Planets2((600, 200)))
-                        planets_hard.add(Planets2((600, 400)))
+                        planets_hard.add(Planets2((600, 150)))
+                        planets_hard.add(Planets2((600, 450)))
                     menu = False
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     options()
@@ -216,7 +216,7 @@ def score_screen():
 
         screen.blit(background, (0, 0))
         score_over = write('CONGRATS YOU WIN!', 100, (225, 225, 225)) 
-        end = write('PRESS RETURN TO END GAME', 40, (225, 225, 225))
+        end = write('PRESS RETURN END GAME', 40, (225, 225, 225))
         screen.blit(score_over, (200, 200))
         screen.blit(end, (400, 450))
         pygame.display.update()
@@ -268,8 +268,6 @@ class Alien(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = np.array([pos[0], pos[1]])
 
-    def move(self, vel):
-        self.rect.center = self.rect.center + 0.001 * vel
         
 
 aliens = pygame.sprite.Group()
@@ -303,7 +301,8 @@ while game:
 
     # Update the rocket position and velocity if it has been launched
     if rocket_launched:
-
+        
+        rocket_velocity[0] += 0.1
         rocket_velocity[1] += 0.1
         rocket_rect.move_ip(rocket_velocity)
         #calculate the gravity of the planets
@@ -330,7 +329,7 @@ while game:
     
 
     #respawn the rocket if it goes off the screen
-    if rocket_rect.top > screen_height or rocket_rect.top < 0:
+    if rocket_rect.top > screen_height or rocket_rect.top < 0 or rocket_rect.left > screen_width or rocket_rect.left < 0 :
         num_rockets -= 1
 
         if num_rockets == 0:
